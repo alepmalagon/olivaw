@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bluetti Desktop Monitor</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <h1 class="app-title">
+                    <span class="logo">⚡</span>
+                    Bluetti Monitor
+                </h1>
+                <div class="header-actions">
+                    <button id="scanBtn" class="btn btn-primary">
+                        <span class="btn-icon">🔍</span>
+                        Scan Devices
+                    </button>
+                    <div class="connection-status" id="connectionStatus">
+                        <span class="status-indicator"></span>
+                        <span class="status-text">Disconnected</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Device Discovery Section -->
+            <section class="section" id="discoverySection">
+                <div class="section-header">
+                    <h2>Device Discovery</h2>
+                    <p class="section-description">Scan for nearby Bluetti devices</p>
+                </div>
+                <div class="device-list" id="deviceList">
+                    <div class="empty-state" id="emptyState">
+                        <div class="empty-icon">📡</div>
+                        <h3>No devices found</h3>
+                        <p>Click "Scan Devices" to search for Bluetti power stations</p>
+                    </div>
+                </div>
+                <div class="scanning-indicator" id="scanningIndicator" style="display: none;">
+                    <div class="spinner"></div>
+                    <span>Scanning for devices...</span>
+                </div>
+            </section>
+
+            <!-- Connected Devices Section -->
+            <section class="section" id="connectedSection" style="display: none;">
+                <div class="section-header">
+                    <h2>Connected Devices</h2>
+                    <p class="section-description">Monitor your connected Bluetti devices</p>
+                </div>
+                <div class="connected-devices" id="connectedDevices">
+                    <!-- Connected device cards will be inserted here -->
+                </div>
+            </section>
+
+            <!-- Device Monitor Section -->
+            <section class="section" id="monitorSection" style="display: none;">
+                <div class="section-header">
+                    <h2 id="monitorTitle">Device Monitor</h2>
+                    <div class="monitor-actions">
+                        <button id="refreshBtn" class="btn btn-secondary">
+                            <span class="btn-icon">🔄</span>
+                            Refresh
+                        </button>
+                        <button id="disconnectBtn" class="btn btn-danger">
+                            <span class="btn-icon">🔌</span>
+                            Disconnect
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="monitor-grid">
+                    <!-- Battery Status Card -->
+                    <div class="monitor-card">
+                        <div class="card-header">
+                            <h3>Battery Status</h3>
+                            <span class="card-icon">🔋</span>
+                        </div>
+                        <div class="card-content">
+                            <div class="battery-display">
+                                <div class="battery-level" id="batteryLevel">--</div>
+                                <div class="battery-bar">
+                                    <div class="battery-fill" id="batteryFill" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Power Input Card -->
+                    <div class="monitor-card">
+                        <div class="card-header">
+                            <h3>Power Input</h3>
+                            <span class="card-icon">⚡</span>
+                        </div>
+                        <div class="card-content">
+                            <div class="power-display">
+                                <span class="power-value" id="powerInput">-- W</span>
+                                <span class="power-label">Charging</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Power Output Card -->
+                    <div class="monitor-card">
+                        <div class="card-header">
+                            <h3>Power Output</h3>
+                            <span class="card-icon">🔌</span>
+                        </div>
+                        <div class="card-content">
+                            <div class="power-display">
+                                <span class="power-value" id="powerOutput">-- W</span>
+                                <span class="power-label">Load</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Status Card -->
+                    <div class="monitor-card">
+                        <div class="card-header">
+                            <h3>Status</h3>
+                            <span class="card-icon">📊</span>
+                        </div>
+                        <div class="card-content">
+                            <div class="status-display">
+                                <span class="status-badge" id="chargingStatus">Unknown</span>
+                                <div class="last-update">
+                                    Last update: <span id="lastUpdate">Never</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Device Info -->
+                <div class="device-info" id="deviceInfo">
+                    <h3>Device Information</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label>Model:</label>
+                            <span id="deviceModel">--</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Serial Number:</label>
+                            <span id="deviceSerial">--</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Firmware:</label>
+                            <span id="deviceFirmware">--</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Address:</label>
+                            <span id="deviceAddress">--</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Error Toast -->
+        <div class="toast error-toast" id="errorToast" style="display: none;">
+            <div class="toast-content">
+                <span class="toast-icon">❌</span>
+                <span class="toast-message" id="errorMessage"></span>
+            </div>
+            <button class="toast-close" id="closeErrorToast">×</button>
+        </div>
+
+        <!-- Success Toast -->
+        <div class="toast success-toast" id="successToast" style="display: none;">
+            <div class="toast-content">
+                <span class="toast-icon">✅</span>
+                <span class="toast-message" id="successMessage"></span>
+            </div>
+            <button class="toast-close" id="closeSuccessToast">×</button>
+        </div>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>
+
